@@ -1,0 +1,114 @@
+Programming Paradigms
+
+  Primary objective of this course is to understand the functional programming paradigm (as opposed to a course on Scala)
+
+  Paradim: In a science, a paradigm describes distinct concepts or thought patterns in scienfitic discipline.
+
+    Main programming paradigms:
+      1. imperative (Java, C)
+      2. functional
+      3. logic 
+
+      Orthogonal to all of these: object-oriented programming (can be used with all three paradigms)
+
+Imperative programming
+
+  - modifying mutable variables
+  - using assignments
+  - using control structures such as if-then-else, loops, break, continue, return
+
+    Common, informal way to understand imperative programs is as instruction sequences
+    for a Von Neumann computer
+
+    Strong correspondence between between concepts in imperative programming and implementation details of Von Neumann computer
+      Mutable variables     ~ memory cells
+      Variable dereferences ~ load instructions
+      Variable assignments  ~ store instructions
+      Control structures    ~ jumps
+
+    Problem with scaling: can we avoid conceptualizing programs word by word?
+    Argument: "In the end, pure imperative programming is limited by the 'Von Neumann' bottleneck:"
+      "One tends to conceptualize data structures word-by-word
+
+   The solution is to create techniques for defining high-level abstractions such as collections, polynomials,
+   geometric shapes, strings, documents
+
+  Ideally, we would come up with a theory for these abstractions.
+
+What is a theory?
+  A theory consists of:
+
+    1. one or more data types
+    2. operations on these types
+    3. laws the describe the relationship between values and operations
+
+    Normally, a theory does not describe mutations! (change the state of something but keep the reference intact)
+
+Theories without mutation
+
+  The theory of polynomials defines the sum of two polynomials by laws such as: 
+
+  (a*x + b) + (c*x + d) = (a+c)*x + (b+d)
+
+  This produces a NEW polynomial. "It does not define an operator to change a coefficient while
+  keeping the polynomial the same!"
+
+  We can easily do this kind of mutation in imperative programming:
+ 
+  class Polynomial { double[] coefficient; }
+  Polynomial p = ...;
+  p.coefficient[0] = 42;
+
+  Another example: string concatenation
+
+    The theory of strings defines a concatenation operator ++ which is associative:
+
+      (a ++ b) ++ c = a ++ (b ++ c)
+
+      - but, we do NOT have an operator to change a sequence element while still keeping the 'same' sequence
+      (some languages, like Java, get this right by making strings immutable)
+
+Consequences for programming
+
+  If we want to implement high-level concepts following their mathematical theories, there's no place for mutation.
+    - the theories don't admit it
+    - mutation can destroy useful laws in the theories
+
+  Therefore, let's
+    - concentrate on defining theories for operators expressed as functions
+    - avoid mutations
+    - have powerful ways to abstract and compose functions
+
+What is functional programming?
+
+  In a restricted sense, functional programming means programming without mutable variables, assignments, loops
+  and other imperative control structures
+
+  In a wider sense, functional programming means focusing on the functions
+    - functions can be values that are produced, consumed, and composed
+
+  Functions are 'first-class' citizens
+    - they can be defined anywhere, including inside other functions
+    - like any other value, they can be passed as parameters to functions and return results
+    - as for other values, there exists a set of operators to compose functions
+
+Some functional languages
+
+  In the restricted sense:
+    - Pure List, XSLT, XPath, XQuery, FP
+    - Haskell (without I/O Monad or UnsafePerformIO)
+
+  In the wider sense:
+    - List, Scheme, Racket, Clojure
+    - SML, Ocaml, F#
+    - Haskell (full language)
+    - Scala
+    - Smalltalk, Ruby
+
+    The first functional language was List created in 1959
+
+  Functional programming is becoming increasingly popular, because it offers the following benefits
+ 
+    - simpler reasonning principles
+    - better modularity
+    - good for exploiting parallelism for multicore and cloud computing

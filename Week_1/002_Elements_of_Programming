@@ -1,0 +1,117 @@
+Elements of Programming
+
+  Functional programming is a bit like using a calculator
+  
+  An interative shell (or REPL, for Read-Eval-Print-Loop) lets one write expressions
+    and responds with their value
+    - the Scala REPL can be started by typing 'scala'
+
+Evaluation
+
+  A non-primitive expression is evaluated as follows:
+    - Take the leftmost operator
+    - Evaluate its operands (left before right)
+    - apply the operator to the operands
+
+  - a name is evaluated by replacing it with the right hand side of its definition
+  - the evaluation process stops once it results in a value
+  - a value is a number (for the moment)
+    - later we will consider other kinds of values
+
+  Ex: evaluate (2 * pi) * radius
+
+  1. (2 * 3.14159) * radius // look up value for name 'pi'
+  2. 6.28318 * radius // perform arithmetic operation on left
+  3. 6.28318 * 10 // replace 'radius'
+  4. 62.8318
+
+Definitions can have parameters
+
+  def square(x: Double) = x * x
+
+  square(2) // 4
+
+  We can also have parameterized definitions that use other definitions
+
+  def sumOfSquares(x: Double, y: Double) = square(x) + square(y)
+
+  Function parameters come with their type, which is given after a colon
+    def power(x: Int, y: Double): Double = ...
+      - return types are specified after the parameter list and a colon
+
+  The primitive types are as in Java, but written capitalized (Int, Double, Boolean, Float, String,...)
+
+  Example expansion of parameterized functions
+
+  1. sumOfSquares(3, 2 + 2)
+  2. sumOfSquares(3, 4)
+  3. square(3) + square(4)
+  4. 3 * 3 + square(4)
+  5. 9 + square(4)
+  6. 9 + 4 * 4
+  7. 9 + 16
+  8. 25
+
+  This scheme of expression evaluation is called the substitution model
+  The idea underlying this model is that all evaluation does is reduce an expression to a value.
+    - it can be applied to all expressions, as long as they have no side effects
+
+  The substitution model is formalized in the lambda-calculus, which gives a foundation for functional programming
+    - IMPORTANT: expressions cannot have side-effects
+
+  Example of an expression with a side-effect: variable++
+    - returns the old value, and then increments it
+    - this expression cannot be expressed by the substitution model
+
+Termination
+
+  Does every expression reduce to a value (in a finite number of steps)?
+
+    - No.
+      def loop: Int = loop
+     
+    - creates an infinite loop of replacing 'loop' with it's value 'loop'
+
+Changing the evaluation strategy
+
+  The interpreter reduces function arguments to values before rewriting the function
+  
+  We could alternatively apply the function to unreduced arguments
+
+  EX:
+    1. sumOfSquares(3, 2+2)
+    2. square(3) + square(2+2)
+    3. 3*3 + square(2+2)
+    4. 9 + square(2+2)
+    5. 9 + (2+2) * (2+2)
+    6. 9 + 4 * (2+2)
+    7. 9 + 4 * 4
+    8. 9 + 16
+    9. 25
+
+Call-by-name and call-by-value
+
+  The first evaluation strategy is known as call-by-value, the second is known as call-by-name
+
+  Both strategies reduce to the same final values as long as
+    - the reduced expression consists of pure functions, and
+    - both evaluations terminate
+
+  Call-by-value has the advantage that it evaluates every function argument only once
+
+  Call-by-name has the advantage that a function argument is not evaluated if the corresponding
+    paramter is unused in the evaluation of the function body
+
+  Example: given the following function definition: def test(x: Int, y: Int) = x * x
+
+  Which evaluation strategy is fastest?
+ 
+  CBV   CBN   SAME
+                X    test(2,3)
+   X                 test(3+4, 8)
+         X           test(7, 2*4)
+                X    test(3+4, 2*4)
+
+  Call-by-name is faster when it can skip unnecessary computations that call-by-value is forced to do
+
+  Call-by-value is faster when it can perform an operation only once, while call-by-name may have to do it multiple times
