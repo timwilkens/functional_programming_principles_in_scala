@@ -1,0 +1,40 @@
+Evaluation Strategies and Termination
+
+  We know from the last lecture that call-by-name and call-by-value will always reduce to the same expression, as long as
+    both evaluations terminate
+
+  But what happens if termination is not guaranteed?
+
+    - If CBV evaluation of an expression e terminates then the CBN evaluation of e terminates, too
+    - BUT, the other direction does not hold (CBN !imply CBV)
+
+  Example: remember the function loop that calls itself 
+
+    def first(x: Int, y: Int) = x
+
+    Under CBN: first(1, loop)
+      - terminates immediately with the value of 1
+
+    Under CBV: first(1, loop)
+      - calls loop infinitely many times trying to evaluate it, before evaluating 'first'
+
+    So, every terminating CBV evaluation is also a terminating CBN evaluation
+    And, not all terminating CBN evaluations also terminate under CBV
+
+Scala's evaluation strategy
+
+  Scala normally uses call-by-value
+    - often exponentially faster than CBN (avoids repeated computation)
+
+  But if the type of a function paramter starts with '=>' it uses call-by-name
+
+  Example: def constOne(x: Int, y: => Int) = 1
+
+    Trace: constOne(1 + 2, loop)
+           constOne(3, loop)  // Second expression is a call-by-name parameter so is not evaluated yet
+                   1
+  
+    Trace: constOne(loop, 1 + 2)
+                    loop
+                    loop
+                     ...
