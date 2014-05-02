@@ -1,0 +1,66 @@
+Conditionals and Value Definitions
+
+  Scala conditionals look like those in Java, but they are used for expressions, not statements
+
+    def abs(x: Int): Int = if (x >= 0) x else -x 
+      - returns a value, rather than having to assign to a variable
+
+  Boolean expressions
+    true  false  // Constants
+    !b      // Negation
+    b && b  // Conjunction
+    b || b  // Disjunction
+
+      - and the usual comparison operators (<, <=, !=, ...)
+
+  Reduction rulels for Booeleans (based on the substitution model)
+
+  !true      --> false
+  !false     --> true
+  true && e  --> e
+  false && e --> false
+  true || e  --> true
+  false || e --> e
+
+    - && and || are short-circuit operators (they don't always require evaluation of the right-hand operand)
+
+  Rewrite rules for if-else
+
+    if (b) e1 else e2
+
+      1. if (true) e1 else e2  --> e1
+  
+      2. if (false) e1 else e2 --> e2
+
+Value Definitions
+
+  We have seen that function parameters can be passed by value or be passed by name; this same distinction applies to definitions
+
+  The 'def' form is by-name, with its right hand side being evaluated on each use
+
+  The 'val' form is by-value
+
+    val x = 2
+    val y = square(2)
+
+  The right-hand side of a val definition is evaluated at assignment time, and never changed
+    - the name then refers to a VALUE
+    - y above refers to 4, not square(2)
+
+  EX: def loop: Boolean = loop
+
+    def x = loop  --> OK! call-by-name so this def terminates
+
+    val x = loop  --> Not OK! call-by-value requires evaluating 'loop' which is non-terminating
+
+  Exercise: write functions 'and' and 'or' that mimic && and || without using those operators
+
+  def and(x: Boolean, y: Boolean) = 
+    if (x) y else false
+
+  def or(x: Boolean, y: Boolean) = 
+    if (x) true else y
+
+  We can ensure that our functions terminate by forcing our second parameter to be a call-by-name function (x: Boolean, y: => Boolean)
+
+    - this allows us to write and(false, loop) and get an evaluation (won't work with and(true, loop) since we require loop be evaluated)
