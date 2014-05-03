@@ -1,0 +1,71 @@
+Tail Recursion
+
+  Application Rewriting Rule
+
+    The substitution model means we are 'rewriting' the program as we go
+
+    def f(x1,...,xn) = B; --> f(v1,...vn)
+
+    def f(x1,...,xn) = B; --> [v1/x1,...vn/xn]B
+
+  [v1,x1,...,vn/xn] represents the expression B in which all occurrences of xi have been replaced by vi
+    - this is called a substitution
+
+  Ex: Euclid's algorithm for GCD
+
+  def gcd(a: Int, b: Int): Int = 
+    if (b == 0) a else gcd(b, a % b)
+
+    gcd(14, 21)
+    if (21 == 0) 14 else gcd(21, 14 % 21)
+    if (false) 14 else gcd(21, 14 % 21)
+    gcd(21, 14 % 21)
+    gcd(21, 14)
+    if (14 == 0) 21 else gcd(14, 21 % 14)
+    if (false) 21 else gcd(14, 21 % 14)
+    gcd(14, 7)
+    ...
+    7 
+
+  Ex: factorial
+
+  def factorial(n: Int): Int = 
+    if (n == 0) 1 else n * factorial(n - 1)
+
+  factorial(4)
+  if (4 == 0) 1 else 4 * factorial(4 - 1)
+  4 * factorial(3)
+  4 * (3 * factorial(2))
+  ...
+  24
+
+  What is the difference between gcd and factorial?
+
+    - the gcd reduction oscillates between simple calls to gcd
+    - factorial is nested calls to factorial
+
+  Implementation Consideration: If a function calls itself as its last action, the function's stack frame can be reused.
+    - This is called tail recursion
+    - tail recursive functions are iterative
+
+    - if the last action of a function consists of calling a function (which may be the same), one stack frame is sufficient for both functions
+  
+  A non-tail recursive call requires more and more memory as the recursion goes deeper
+
+Tail recursion in Scala
+
+  - In Scala, only directly recursive calls to the current function are optimized (into loops)
+
+  - One can require that a function is tail-recursive using a @tailrec annotation
+
+  @tailrec
+  def gcd(a: Int, b: Int): Int = ...
+
+Exercise: make a tail recursive version of factorial
+
+  def factorial(n: Int) = {
+    def loop(current: Int, total: Int): Int = 
+      if (current == 0) total 
+      else loop(current - 1, total * current)
+    loop(n, 1)
+  }
