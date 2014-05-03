@@ -1,0 +1,46 @@
+Square roots with Newton's Method
+
+  We want to define a function: def sqrt(x: Double): Double = ...
+    - the classical way to do this is through successive approximations
+
+    1. Start with an initial estimate y (any value as long as it is positive (we'll choose 1))
+    2. Repeatedly improve the estimate by taking the mean of y and x/y until within our error bound
+
+  First, define a function which does one iteration step:
+
+    def sqrtIter(guess: Double, x: Double): Double =
+      if (isGoodEnough(guess, x)) guess
+      else sqrtIter(improve(guess, x), x)
+
+     - recursive functions require an explicit return type
+       - non-recursive functions can leave off the return type
+
+  Use a Scala worksheet in Eclipse:
+
+object squareroots {
+    
+  def abs(x: Double) = if (x > 0) x else -x       //> abs: (x: Double)Double
+    
+  def sqrIter(guess: Double, x: Double):Double =
+    if (isGoodEnough(guess, x)) guess
+    else sqrIter(improve(guess, x), x)            //> sqrIter: (guess: Double, x: Double)Double
+
+  def isGoodEnough(guess: Double, x: Double) =
+    abs(guess * guess - x) < 0.001                //> isGoodEnough: (guess: Double, x: Double)Boolean
+    
+  def improve(guess: Double, x: Double) =
+    (guess + x / guess) / 2                       //> improve: (guess: Double, x: Double)Double
+    
+  def sqrt(x: Double) = sqrIter(1.0, x)
+}
+
+  - notice that the sqrt function is really just a wrapper for sqrIter that passes in 1.0 as our first guess
+
+  Two problems with this version:
+
+    1.  Not very precise for small numbers (fix by making our epsilon smaller)
+    2.  Can lead to non-termination for very large numbers (fix by making our epsilon larger)
+      - what to do?
+
+  Change our isGoodEnough to be: abs(guess * guess - x) / x < 0.001
+    - this makes our test proportional to x
