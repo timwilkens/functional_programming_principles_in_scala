@@ -1,0 +1,105 @@
+Higher Order Functions
+
+  Let you pass functions as arguments and return them as results
+    - this provides a flexible way to compose programs
+
+  "Functions that take other functions as parameters or that return functions as results are called higher order functions."
+
+  EX: take the sum of the integers between a and b
+
+    def sumInts(a: Int, b: Int): Int = 
+      if (a > b) 0 else a + sumInts(a + 1, b)
+
+  EX: take the sum of the cubes of the integers between a and b
+
+    def cube(x: Int): Int =  x * x * x
+
+    def sumCubes(a: Int, b: Int): Int = 
+      if (a > b) 0 else cube(a) + sumCubes(a + 1, b)
+
+  EX: take the sum of the factorials of all the integers between a and b
+
+    def sumFactorials(a: Int, b: Int): Int = 
+      if (a > b) 0 else fact(a) + sumFactorials(a + 1, b)
+
+  These are all special cases of "sum from n = a to b the result of applying some function f to each item"
+    - can we factor out this common pattern?
+
+  Define:
+
+    define sum(f: Int => Int, a: Int, b: Int): Int = 
+      if (a > b) 0
+      else f(a) + sum(f, a + 1, b)
+
+    Having sum let's us then write:
+
+      def sumInts(a: Int, b: Int)       = sum(id, a, b)
+      def sumCubes(a: Int, b: Int)      = sum(cube, a, b)
+      def sumFactorials(a: Int, b: Int) = sum(fact, a, b)
+  
+    And our helper functions defined as: 
+  
+      def id(x: Int): Int = x
+      def cube(x: Int): Int = x * x * x
+      def fact(x: Int): Int = if (x == 0) 1 else x * fact(x - 1)
+
+  We have thus been able to factor out the general "sum" pattern and reuse it across functions
+
+Function Types
+
+  The type A => B is the type of a function that takes an argument of type A and returns a result of type B
+    - Int => Int is the type of function that maps integers to integers
+
+Anonymous Functions
+
+  Passing functions as parameters leads to the creation of many small functions
+    - sometimes it is redious to have to define (and name) these functions using def
+
+    Compare this pattern to how we use strings as arguments
+      - We don't have to write
+        def str = "abc"; println(str)
+
+      - We just write
+        println("abc")
+
+    Strings exist as 'literals'. Analogously we would like function literals, which let us write a function without giving it a name.
+      - these are called anonymous functions
+
+Anonymous Function Syntax
+
+  Ex: a function that raises its argument to a cube:
+
+    (x: Int) => x * x * x
+
+    Here, (x: Int) is the parameter of the function, and x * x * x is it's body
+      - the type of the parameter can be omitted if it can be inferred
+
+    Multiple parameters are separated by commas:
+
+      (x: Int, y: Int) => x + y
+
+  Anonymous functions are merely syntactic sugar.
+    - they can always be expressed as 'def f(...) = ...'
+
+  We can know write our summation functions in a shorter way
+ 
+    def sumInts(a: Int, b: Int) = sum(x => x, a, b)
+    def sumCubes(a: Int, b: Int) = sum(x => x * x * x, a, b)
+
+  EX: turn the sum function into a tail-recursive version
+
+    def sum(f: Int => Int)(a: Int, b: Int): Int = {
+      def loop(a: Int, acc: Int): Int = {
+        if (???) ???
+        else loop(???, ???)
+      }
+      loop(???, ???)
+    }
+
+    def sum(f: Int => Int)(a: Int, b: Int): Int = {
+      def loop(a: Int, acc: Int): Int = {
+        if (a > b) acc
+        else loop(a + 1, acc + f(a))
+      }
+      loop(a, 0)
+    }

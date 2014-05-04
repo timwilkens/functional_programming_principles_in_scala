@@ -1,0 +1,79 @@
+Blocks and Lexical Scope
+
+  Nested functions
+
+  "It's good functional programming style to split up a task into many small functions"
+    - many times we never want a user to access these smaller helper functions
+    - we can achieve this and avoid "name-space pollution" by putting the helpers inside the main function
+
+  We achieve this by using a block which is delimited by braces {}
+    - it contains a sequence of definitions or expressions
+    - the last element of a block is an expression that defines its value
+    - this return expression can be preceded by auxiliary definitions
+    - blocks are themselves expressions; a block may appear everywhere an expression can
+
+  Visibility
+ 
+    - the definitions inside a block are only visible from within the block
+    - the definitions inside a block shadow definitions of the same names outside the block
+
+  EX:
+
+    val x = 0
+    def f(y: Int) = y + 1
+    val result = {
+      val x = f(3)  // Shadows the previous x. Inside the block we have access to the f(x) version
+      x * x
+    } + x  // 0
+
+  What does 'result' above evaluate to?
+    - 16
+
+  When we nest functions we can used shared variables from outer blocks to inner blocks
+    - in general, we shouldn't have to pass around the top-level parameters
+
+  This lets us reduce our entire sqrt function to:
+
+  def sqrt(x: Double) = {
+
+    def sqrtIter(guess: Double): Double = 
+      if (isGoodEnough(guess)) guess
+      else sqrtIter(improve(guess))
+
+    def isGoodEnough(guess: Double) = 
+      abs(guess * guess - x) / x < 0.001
+
+    def improve(guess: Double) = 
+      (guess + x / guess) / 2
+
+    sqrtIter(1.0)
+  }
+
+    - We no longer have to pass 'x' around to every function, since they all share that variable
+    - sqrtIter, isGoodEnough, and improve are NOT visible outside sqrt
+
+  Semicolons
+
+    - semicolons at the end of lines are optional, and are generally left off in Scala
+
+    - any line that contains multiple statements requires a separating semicolon
+      val y = x + 1; y * y
+
+  Problem: how can we write expressions that span several lines
+
+    EX:
+ 
+    someLongExpression
+    + someOtherExpression
+
+    interpreted as
+    
+    someLongExpression;
+    + someOtherExpression
+
+  There are two solutions:
+ 
+    1. wrap the expression in parens ()
+    2. place the infix operator at the END of the first line
+
+  Our general tool for reasoning about programs: reduce expressions by using the substitution model
