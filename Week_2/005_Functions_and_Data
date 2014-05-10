@@ -1,0 +1,58 @@
+Functions and Data
+
+  Example: Rational Numbers
+    - a rational number is represented by two numbers x/y
+
+    We could define functions to add rational denominators and numerators, but this would get cumbersome
+      - instead, we should combine all of this into a data structure
+
+Classes
+
+  class Rational(x: Int, y: Int) {
+    def numer = x
+    def denom = y
+  }
+
+  This definition introduces two entities:
+    - a new type, named Rational
+    - a constructor Rational to create elements of this type
+
+  The elements of a class are called objects
+  We create an object by prefixing an application of the constructor of the class with the operator new
+  EX: 
+  val x = new Rational(1, 2)
+  x.numer
+  x.denom  // We select the members of an object with the infix operator '.'
+
+Next, we would like to be able to do some arithmetic on rationals
+
+  Methods - package functions operating on a data abstraction in the data abstraction itself
+
+  class Rational(x: Int, y: Int) {
+    def numer = x
+    def denom = y
+
+    def add(that: Rational) = 
+      new Rational(
+        numer * that.denom + that.numer * denom,
+        denom * that.denom)
+  }
+
+  val x = new Rational(1,2)
+  val y = new Rational(2,3)
+
+  x.add(y)
+
+  override def toString = numer + "/" + denom
+
+  println(x.toString)
+
+Exercise:
+  1. Add a method neg to class Rational that is used like this x.neg  // -x
+
+  2. Add a method sub to subtract two rational numbers
+  
+  3. What is the result of x - y - z
+
+  def neg: Rational = new Rational(-numer, denom)
+  def sub(that: Rational) = add(that.neg)  // DRY principle (Don't Repeat Yourself)
