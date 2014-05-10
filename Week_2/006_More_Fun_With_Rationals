@@ -1,0 +1,66 @@
+More Fun With Rationals
+
+  Ideally, all rationals would be simplified as much as possible
+    -rather than doing this in each operation, we should do the simplification with each construction
+
+  add gcd to simplify 
+  private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
+  private val g = gcd(x,y)  // Private marks both of these as inaccessible to the outside world
+  
+  def numer = x / g
+  def denom = y / g
+
+    - we calculate gcd immediately in the constructor of Rational, so we can easily re-use it
+    - the other possibility is to call gcd in the declarations of denom and numer if we expect them to be called
+      infrequently (thus amortizing the cost of gcd)
+
+The Client's View
+  "Clients observe exactly the same behavor in each case.
+   This ability to choose different implementations of the data without affecting clients is called data abstraction.
+   It is a corenerstone of software engineering."
+
+  def less(that: Rational) = numer * that.denom < that.numer * denom
+
+  def max(that: Rational) if (this.less(that)) that else this  // DRY
+
+Self Reference
+
+  On the inside of a class, the name 'this' represents the object on which the current method is executed
+
+Requirements
+
+  Check that we aren't creating a Rational with denominator of 0
+
+  require(y != 0, "denominator must be nonzero") 
+    - a way of throwing an IllegalArgumentException
+
+  require is a predefined function
+    - it takes a condition and an optional message string
+
+  There is also assert
+
+    val x = sqrt(y)
+    assert(x >= 0)
+
+    If the assert condition is false, we will throw an AssertionError
+
+    Require and Assert have different intents
+      - require is used to enfore a precondition on the called of a function
+      - assert is used as to check the code of the function itself
+
+Constructors
+
+  In Scala, a class implicitly introduces a constructor. This is called the primary constructor.
+    - takes the parameters of the class
+    - executes all statements in the class body
+
+  We can define a secondary constructor using 'this
+
+  def this(x: Int) = this(x, 1)  // Takes in a single number and creates a rational with 1 as the denom
+
+ If we change Rational to simplify only before calling toString, and not in the constructor, does the client see the difference?
+   - only for smaller numbers and small numbers of operations
+   -  we could run into arithmetic overflow
+
+  In general, it is better to simplify numbers as early as possible
+    - we can tell the difference by looking at the function signature
