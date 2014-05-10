@@ -77,3 +77,17 @@ More Function Types
     1. Write a product function that calculates the product of the values of a function for the points on a given interval
     2. Write factorial in terms of product
     3. Can you write a more general function, which generalizes both sum and product
+
+  def product(f: Int => Int)(a: Int, b: Int): Int = 
+    if (a > b) 1 else f(a) * product(f)(a + 1, b)
+
+  def factorial(n: Int)= product(x => x)(1, n)
+
+  - Think of the generalized function as map reduce (transform each element and then reduce to a single element)
+  def mapReduce(f: Int => Int, combine: (Int, Int) => Int, zero: Int)(a: Int, b: Int): Int = 
+    if (a > b) zero 
+    else combine(f(a), mapReduce(f(a), combine, zero)(a + 1, b)
+
+  Product in terms of mapReduce:
+
+  def product(f: Int => Int)(a: Int, b: Int): Int = mapReduce(f, (x,y) => x * y, 1)(a, b)
