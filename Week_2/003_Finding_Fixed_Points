@@ -1,0 +1,39 @@
+Finding Fixed Points
+
+  A number x is called a fixed point of a function f if
+   
+    f(x) = x
+
+  For some functions f we can locate the fixed points by starting with an initial estimate and then reapply f in a repetitive way
+
+  import math.abs
+
+  val tolerance = 0.0001
+  def isCloseEnough(x: Double, y: Double) =
+    abs((x - y) / x) < tolerance
+  def fixedPoint(f: Double => Double)(firstGuess: Double) = {
+    def iterate(guess: Double): Double = {
+      val next = f(guess)
+      if (isCloseEnough(guess, next)) next
+      else iterate(next)
+    }
+    iterate(firstGuess)
+  }
+
+  We can rewrite the square root function in terms of this fixed point model
+
+    sqrt(x) = y such that y * y = x
+   
+    sqrt(x) = y such that y = x / y
+
+    sqrt(x) = fixedPoint(y => y / x)(1)
+
+      - this does not converge!
+
+    Use Average Damping and change y => y / x to y => (y + x / y) / 2
+
+Abstract out stabilizing by averaging
+  def averageDamp(f: Double => Double)(x: Double) = (x + f(x)) / 2)
+
+  Write sqrt in terms or averageDamp and fixedPoint
+    sqrt(x: Double) = fixedPoint(averageDamp(y => y / x)), 1)
