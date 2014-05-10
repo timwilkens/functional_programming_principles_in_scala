@@ -1,0 +1,62 @@
+Scala Syntax Summary
+
+  Given context-free syntax in Extended Backus-Naur Form (EBNF)
+    | denotes an alternative,
+    [...] an option (0 or 1),
+    {...} a repetition (0 or more).
+
+  Types
+
+  Type         = SimpleType | FunctionType
+  FunctionType = SimpleType '=>' Type
+               | '(' [Types] ')' '=>' Type
+  SimpleType   = Ident
+  Types        = Type {',' Type}
+
+    A type can be:
+      - a numeric type: Int, Double (and Byte, Short, Char, Long, Float),
+      - The Boolean type with the values true and false,
+      - The String type,
+      - A function type, like Int => Int, (Int, Int) => Int
+
+  Expressions
+
+  Expr         = InfixExpr | FunctionExpr
+               | if '(' Expr ')' Expr else Expr
+  InfixExpr    = PrefixExpr | InfixExpr Operator InfixExpr
+  Operator     = Ident
+  PrefixExpr   = ['+' | '-' | '!' | '~' ] SimpleExpr
+  SimpleExpr   = Ident | literal | SimpleExpr '.' Ident
+               | Block
+  FunctionExpr = Bindings '=>' Expr
+  Bindings     = Ident [ ':' SimpleType] 
+               | '(' [Binding {',' Binding}] ')'
+  Binding      = Ident [':' Type]
+  Block        = '{' {Def ':'} Expr '}'
+
+  Less formally, an expression can be:
+    - an identifier like x, isGoodEnough
+    - a literal like 0, 1.0, "abc"
+    - a function application like sqrt(x)
+    - an operator application like -x, y + x
+    - a selection like math.abs
+    - a conditional expression like if (x < 0) -x else x
+    - a block like { val x = math.abs(y); x * 2 }
+    - an anonymous function like x => x + 1
+
+  Definitions
+
+    Def        = FunDef | ValDef
+    FunDef     = def Ident {'(' [Parameters] ')'}
+                 [':' Type] '=' Expr
+    ValDef     = val Ident [':' Type] '=' Expr
+    Parameter  = Ident ':' [ '=>' ] Type
+    Parameters = Parameter {',' Parameter}
+
+  A definition can be:
+    - a function definition
+    - a value definition
+
+  Parameters can be
+    - call-by-value (x: Int)
+    - call-by-name  (y: => Double)
