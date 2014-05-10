@@ -1,0 +1,59 @@
+Evaluation and Operators
+
+  The instantiation of the class new C(e1,....) is evaluated like a normal function, using the subtitution model
+
+We would like our Rational class to be able to use the arithmetic operators the way integers do
+
+  - we can write integer + integer
+  - but we have to write rational.add(rational)
+
+  Two Steps:
+
+  1. Infix Notation
+    - any method with a parameter can be used like an infix operator
+    
+    r.add(s)  --> r add s
+    r.less(s) --> r less s
+    r.max(s)  --> r max s
+
+  2. Relaxed Identifirs
+    - Operators can be used as identifiers.
+    Thus, an identifier can be:
+
+      - Alphanumeric: starting with a letter followed by a sequence of letters or numbers
+      - Symbolic: starting with an operator symbol followed by other operator symbols
+        - the underscore counts as a letter
+        - alphanumeric identifiers can also end in an underscore, followed by some operator symbols
+
+      EX: x1    *     +?%&    vertor_++    counter_=
+
+    So, in Rational can redefine:
+
+    def less becomes def < (that: Rational) = numer * that.denom < that.numer * denom
+      - this way we can write Rational < Rational
+      - we can likewise change add --> + and sub --> -
+
+    How can we use the prefix unary operator - to replace neg?
+
+    def unary_- : Rational = new Rational(-numer, denom)  // use unary prefix to show this is a prefix operator with one argument
+      - need space between end of identifier and ':' since ':' is a legal symbol for an identifier
+
+  Precedence Rules
+    - the precedence of an operator is determined by its first character
+    List in increasing order of priority  // Higher precedence ==> Operation done first. Multiplication has higher precedence that addition
+    all letters
+    |
+    ^
+    &
+    < >
+    = !
+    :
+    + -
+    * / %
+    all other special characters
+
+Exercise: provide a fully parenthized version of 
+ 
+  (((a + b) ^? (c ?^ d)) less ((a ==> b) | c))
+    
+Do not abuse the relaxed identifiers to create crazy operator symbols.
