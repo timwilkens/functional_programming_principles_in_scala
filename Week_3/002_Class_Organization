@@ -1,0 +1,98 @@
+Class Organization
+
+Packages
+
+  Classes and objects are organized in packages
+
+  To place a class or object inside a package, use a package clause at the top of your source file
+
+    package progfun.examples
+
+    object Hello { ... }
+
+  This places Hello in the package for progfun.examples
+
+  You can then refer to Hello by its fully qualified name progfun.examples.Hello
+
+  Imports can also be of the form 'import package._' which will import everything in that package // This is called a wildcard import
+  - It is also possible to import several names from a package 'import pacakge.{Name1, Name2}
+
+  You can import from either a package or an object
+
+  Some things are automatically imported into any Scala program
+    - all members of package scala
+    - all members of package java.lang
+    - all members of the singleton object scala.Predef
+
+    Int    --> scala.Int
+    assert --> scala.Predef.assert
+    Object --> java.lang.Object
+
+Traits
+
+  In Java, as well as in Scala, a class can only have one superclass
+    - Scala is a 'single inheritance' language.
+
+  But what if a class has several natural supertypes to which it conforms or from which it wants to inherit code?
+    - the solution is to use traits
+
+  A trait is declared like an abstract class, just with rait instead of abstract class
+
+  trait Planar {
+    def height: Int
+    def width: Int
+    def surface: height * width
+  }
+  
+  Classes, objects, and traits can inherit from at most one class but arbitrarily many traits
+
+  EX: class Square extends Shape with Planar with Movable ...
+
+  Traits resemble interfaces in Java, but are more powerful because they can contain fields and concrete methods
+  However, traits cannot have (value) parameters, only classes can
+
+Scala Hierarchy
+
+  scala.Any - the base type for all other types
+            - Methods: '==', '!=', 'equals', 'hashCode', 'toString'
+
+  scala.AnyRef - the base type of all reference types
+               - alias of java.lang.Object
+
+  scala.AnyVal - the base type of all primitive types (Int, Char, etc...)
+
+  scala.Nothing - at the bottom of Scala's type hierarchy. It is a subtype of every other type
+    - used to signal abnormal termination
+    - useful as an elemennt of empty collections
+
+Exceptions
+
+  Scala's exception handling is similar to Java's.
+
+  The expression
+
+    throw Exc
+
+  aborts evaluation with the exception Exc.
+    - the type of this expression is Nothing.
+
+  def error(msg: String) = throw new Error(msg)  --> error: (msg: String)Nothing
+
+The Null Type
+
+  every reference class type also has null as a value.
+
+  The type of null is Null // 'null' is both value and type
+
+  Null is a subtype of every class that inherits from Object
+    - it is incompatible with subtypes of AnyVal
+
+  val x = null         // x: Null
+  val y: String = null // y: String
+  val z: Int = null    // type mismatch
+
+Exercise: What is the type of this expression:
+
+  if (true) 1 else false
+
+  - AnyVal (can return either Int or Boolean, which are both descendants of AnyVal)
