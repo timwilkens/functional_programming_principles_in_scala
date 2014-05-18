@@ -1,0 +1,118 @@
+Polymorphism
+
+Cons-Lists
+
+  A fundamental data structure in many functional languages is the immutable linked list.
+
+  It is constructed from two building blocks:
+    Nil - the empty list
+    Cons - a cell containing an element and the remainder of the list
+
+Outline for a class hierarchy that represents lists of integers
+
+  package week4
+
+  trait IntList ...
+  class Cons(val head: int, val tail: IntList) extends IntList ...
+    - writing 'val head: int' defines both a parameter and a field in the class
+  class Nil extends IntList ...
+
+  A list is either:
+    - an empty list new Nil, or
+    - a list new Cons(x, xs) consisting of a head element x and a tail list xs
+
+  class Cons(val head: Int) is equivalent to the following:
+
+  class Cons(_head: Int) {
+    val head = _head
+  }
+
+  Problem: our list construction only allows us to work with Ints
+    - we would have to create new classes for Doubles, Floats, etc...
+
+  We can generalize the definition by using a type parameter:
+
+  package week4
+
+  trait List[T]
+  class Cons[T](val head: T, val tail: List[T]) extends List[T]
+  class Nil[T] extends List[T]
+
+  Type parameters are written in square brackets, e.g. [T]
+
+  trait List[T] {
+    def isEmpty: Boolean
+    def head: T
+    def tail: List[T]
+  }
+
+  class Cons[T](val head: T, val tail: List[T]) extends List[T] {
+    def isEmpty = false
+    // val head: T is a legal implementation of 'head'
+  }
+
+  class Nil[T] extends List[T] {
+    def isEmpty = true
+    def head = throw new NoSuchElementException("Nil.head")
+    def tail = throw new NoSuchElementException("Nil.tail")
+  }
+
+Generic Functions
+
+  Like classes, functions can have type parameters
+
+  For instance, here is a function that creates a list consisting of a single element
+
+    def singleton[T](elem: T) = new Cons[T](elem, new Nil[T])
+
+  We can then write:
+
+    singleton[Int](1)
+    singleton[Boolean](true)
+
+Type Inference
+
+  The Scala compiler can usually deduce the correct type parameters from the value arguments of a function call.
+
+  So, in most cases, type parameters can be left out. You could also write:
+    singleton(1)
+    singleton(true)
+
+Types and Evaluation
+
+  Type parameters do not affect evaluation in Scala.
+    - types are used by the compiler, but not for evaluation
+
+  We can assume that all type parameters and type arguments are removed before evaluating the program
+
+  This is called 'type erasure'.
+  Languages that use type erasure include Java, Scala, Haskell, ML, OCaml
+
+  Other languages keep the type parameters around at run time, including C++, C#, F#
+
+Polymorphism
+
+  Means that a function type comes "in many forms".
+
+  In programming it means that
+    - the function can be applied to arguments of many types, or
+    - the type can have instances of many types
+
+  We have seen two principal forms of polymorphism:
+
+    - subtyping: instances of a subclass can be passed to a base class
+      - any function/method that takes a List can also take Nil or Cons
+    - generics: instances of a function or class are created by type parameterization
+    
+  Exercise: write a function nth that takes an integer n and a list and selects the n'th element of the list
+    - if index is out of range throw a IndexOutOfBoundsException
+
+  def nth[T](n: Int, xs: List[T]): T = 
+    if (xs.isEmpty) throw new IndexOutOfBoundsException
+    else if (n == 0) xs.head
+    else nth(n - 1, xs.tail)
+  }
+
+  val list = new Cons(1, new Cons(2, new Cons(3, new Nil)))
+  nth(2, list) // 3
+  nth(5, list) // IndexOutOfBoundsException
