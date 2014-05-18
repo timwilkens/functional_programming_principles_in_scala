@@ -1,0 +1,142 @@
+Class Hierarchies
+
+  Abstract Classes
+
+    - consider the task of writing a class for sets of integers with the following operations
+    abstract class IntSet {
+      def incl(x: Int): IntSet
+      def contains(x: Int): Boolean
+    }
+
+  IntSet is an 'abstract class'
+    - abstract classes can contain members which are missing an implementation
+    - no instances of an abstract class can be created with the operator new
+      - abstract classes must be extended, and are never directly implemented
+
+  Class Extensions
+
+    - consider implementing sets as binary trees
+
+    - there are two possible types of trees: a tree for the empty set, ad a tree consisting
+      of an integer and two sub-trees
+
+    class Empty extends IntSet {
+      def contains(x: Int): Boolean = false
+      def incl(x: Int): IntSet = new NonEmpty(x, new Empty, new Empty)
+    }
+
+      Invariant - values for children to the left of a node are less than the value of that node
+                - values for children to the right of a node are greater than the value of that node
+
+    def NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
+
+      def contains(x: Int): Boolean = 
+        if (x < elem) left contains x // Rely on the fact that contains called on node IsEmpty always returns false
+        else if (x > elem) right contains x
+        else true
+
+      def incl(x: Int): IntSet = 
+        if (x < elem) new NonEmpty(elem, left incl x, right)
+        else if (x > elem) new NonEmpty(elem, left, right incl x)
+        else this  // Already included.
+
+    }
+
+    This implementation is entirely functional; no mutation of data occurs. New trees are generated as needed.
+      - called 'Persistent Data Structures'
+      - even when we make changes to a data structure the original is still maintained
+
+    Override the toString method for our NonEmpty tree
+
+    override def toString = "{" + left + elem + right + "}"
+
+  Since Empty and NonEmpty both extend the class IntSet, they both 'conform' to the type IntSet
+    - an object of type Empty or NonEmpty can be used wherever an object of type IntSet is required
+
+  Terminology:
+
+    IntSet is called the 'superclass' of Empty and NonEmpty
+   
+    Empty and NonEmpty are 'subclasses' of IntSet
+
+    Any user-defined class extends another class
+
+    If no superclass is given, the standard class Object in the Java package java.lang is assumed
+
+    The direct or indirect superclasses of a class C are called 'base classes' of C
+      - The base classes of NonEmpty are IntSet and Object
+
+    The definitions of contains and incl in the classes Empty and NonEmpty 'implement'
+    the abstract functions in the base trait IntSet.
+
+    It is also possible to 'redefine' an existing, non-abstract definition in a subclass by using override.
+
+    EX:
+
+       abstract class Base {
+         def foo = 1
+         def bar: Int
+       }
+
+       class Sub extends Base {
+         override def foo = 2
+         def bar = 3
+       }
+
+       - having to explicitly override a method defined in a base class helps prevent accidentally doing so
+       - overriding also ensures that we are actually overriding another definition 
+
+  Object Definitions
+
+    In the IntSet example, one could argue that there is really only a single empty IntSet
+      - it seems overkill to have to create many instances of it
+    
+    We can express this case better with an object definition
+
+    object Empty extends IntSet {
+      def contains(x: Int): Boolean = false
+      def incl(x: Int): IntSet = new Non(Empty(x, Empty, Empty)
+    }
+
+      - this defines a singleton object named Empty
+      - no other Empty instances can be (or need to be) created
+      - Singleton objects are values, so Empty evaluates to itself
+
+  Programs
+
+    So far we have executed all Scala code from the REPL or the worksheet
+    But it is also possible to create standalone applications in Scala.
+ 
+    Each application contains an object with a main method
+    
+    Here is a "Hello, World!" example:
+
+    object Hello {
+      def main(args: Array[String]) = println("Hello, World!")
+    }
+
+   Once compiled, this can be run with `scala Hello` // The name of the singleton object
+
+  Dynamic Binding
+  
+    Object-oriented languages implement dynamic method dispatch.
+
+    This means that the code invoked by a method call depends on the runtime of the object that contains the method.
+
+    EX:
+
+      Empty contains 1  -->  false
+
+      (new NonEmpty(7, Empty, Empty)) contains 7
+
+      --> [7/elem] [7/x] [new NonEmpty(7, Empty, Empty)/this]
+          if (x < elem) this.left contains x
+            else if (x > elem) this.right contains x else true
+
+      --> if (7 < 7) new NonEmpty(7, Empty, Empty).left contains 7
+          else if (7 > 7) new NonEmpty(7, Empty, Empty).right contains 7
+          else true
+
+  Dynamic dispatch of methods is analogous to calls to higher-order functions
+
+    Question: Can we implement one in terms of the other?
