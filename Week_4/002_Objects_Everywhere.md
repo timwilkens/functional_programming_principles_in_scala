@@ -51,7 +51,7 @@ Boolean Constants
      object false extends Boolean {
        def ifThenElse[T](t: => T, e: =>T) = e
      }
-   }
+     }
 
   Exercise: provide an implemenetation of the comparison operator < in lass idealized.scala.Boolean
  
