@@ -22,7 +22,7 @@ Pure Booleans
 
   But one *could* define it as a class from first principles:
 
-  ```package idealized.scala
+     package idealized.scala
      abstract class Boolean {
        def ifThenElse[T](t: => T, e: => T): T
 
@@ -33,7 +33,7 @@ Pure Booleans
        def == (x: Boolean): Boolean    = ifThenElse(x, x.unary_!)
        def != (x: Boolean): Boolean    = ifThenElse(x.unary_!, x)
        ...
-     }```
+     }
 
    In our idealized class instead of writing `if (cond) te else ee` we would write `cond.ifThenElse(te, ee)`
 
@@ -42,7 +42,7 @@ Boolean Constants
 
   We would then define our constants true and false that go with Boolean in idealized.scala:
 
-  ```package idealized.scala
+     package idealized.scala
 
      object true extends Boolean {
        def ifThenElse[T](t: => T, e: => T) = t
@@ -51,16 +51,16 @@ Boolean Constants
      object false extends Boolean {
        def ifThenElse[T](t: => T, e: =>T) = e
      }
-   }```
+   }
 
   Exercise: provide an implemenetation of the comparison operator < in lass idealized.scala.Boolean
  
   Assume for this that false < true
 
-  ```class Boolean {
+     class Boolean {
        def < (x: Boolean) =
          ifTheElse(false, x)
-     }```
+     }
 
 The class int
 ------------
@@ -69,21 +69,21 @@ The class int
 
   Exercise: provide an implementation of the abstract class Nat that represents non-negative integers
 
-  ```abstract class Nat {
+     abstract class Nat {
        def isZero: Boolean
        def predecessor: Nat
        def successor: Nat
        def + (that: Nat): Nat
        def - (that: Nat): Nat
-     }```
+     }
 
   Do not use standard numerical classes in this implementation.
   Rather, implement a sub-object and a sub-class:
 
-    ```object Zero extends Nat
-       class Succ(n: Nat) extends Nat```
+    `object Zero extends Nat`
+    `class Succ(n: Nat) extends Nat`
 
-   ```abstract class Nat {
+     abstract class Nat {
        def isZero: Boolean
        def predecessor: Nat
        def successor: new Succ(this)
@@ -103,6 +103,6 @@ The class int
        def predecessor = n
        def +(that: Nat) = new Succ(n + that)
        def -(that: Nat) = if (that.isZero) this else n - that.predecessor
-     }```
+     }
 
   Called _Peano Numbers_

@@ -57,15 +57,15 @@ Functions and Methods
 
   or, expanded:
 
-    ```new Function1[Int, Boolean] {
+       new Function1[Int, Boolean] {
          def apply(x: Int) = f(x)
-       }```
+       }
 
   In the lamba calculus the conversion from method to anonymous function application is called _eta-expansion_.
 
   Exercise: create a List object using our List class that can easily be invoked like `List(1,2)` to create a list containing 1 and 2
 
-  ```trait List[T] {
+     trait List[T] {
        def isEmpty: Boolean
        def head: T
        def tail: List[T]
@@ -84,4 +84,4 @@ Functions and Methods
        def apply[T](x1: T, x2: T): List[T] = new Cons(x1, new Cons(x2, new Nil))
        def apply[T](x: T_: List[T] = new Cons(x, new Nil)
        def apply[T] = new Nil
-     }```
+     }
