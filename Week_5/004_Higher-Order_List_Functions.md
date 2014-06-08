@@ -66,7 +66,7 @@ def squareList(xs: List[Int]): List[Int] =
 
 Another common operation on lists is to select all elements that meet a certain condition
 
-``scala
+```scala
 def posElems(xs: List[Int]): List[Int] = xs match {
   case Nil => xs
   case y :: ys => if (y > 0) y :: posElems(ys) else posElems(ys)
