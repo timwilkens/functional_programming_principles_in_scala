@@ -64,8 +64,8 @@ groupBy is available on Scala collections. It partitions a collection into a map
 
 ```scala
 fruit groupBy (_.head) // Map(p -> List(pear, pineapple),
-                              a -> List(apple),
-                              o -> List(orange))
+                       //     a -> List(apple),
+                       //     o -> List(orange))
 ```
 
 ##Map Example
